@@ -1,0 +1,17 @@
+.appName{
+  font-size: 50px;
+  text-align: center;
+  color: '#00DDFF'
+}
+
+.typeForm{
+  padding: 10px;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.page{
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
