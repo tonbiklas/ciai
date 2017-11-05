@@ -1,5 +1,9 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import Dropdown from 'react-dropdown';
+import {Navbar, NavItem, Nav} from 'react-bootstrap'
+import Store from './store/Store';
+import dispatcher from './dispatcher.js'
 
 export default class SignUpPage extends React.Component {
   constructor(props){
@@ -10,7 +14,6 @@ export default class SignUpPage extends React.Component {
       passwordConfirm:"",
       emailText:"",
       typeUser:"",
-      isRegistered:false//Vai ajudar para sabermos se vale guardamos estas informações ou não
     }
     this.changeUsername = this.changeUsername.bind(this);
     this.changePasswordText = this.changePasswordText.bind(this);
@@ -36,8 +39,14 @@ export default class SignUpPage extends React.Component {
   }
   processSigningUp(e){
     if(this.state.passwordConfirm===this.state.passwordText){
-      alert("User Registered")
-      this.setState({isRegistered:true})
+      Store.registerUser(this.state.usernameText,this.state.passwordConfirm,this.state.emailText,this.state.typeUser)
+      dispatcher.dispatch({
+        tag:"REGISTER_USER",
+        username: this.state.usernameText,
+        password: this.state.passwordText,
+        email: this.state.emailText,
+        type: this.state.typeUser
+      })
     }
     else{
       alert("You must confirm the password")
@@ -46,8 +55,23 @@ export default class SignUpPage extends React.Component {
   render(){
     return (
       <div className="container-fluid">
+      <Navbar staticTop >
+        <Navbar.Header>
+          <Navbar.Brand>
+            Welcome to ArtBook
+          </Navbar.Brand>
+        </Navbar.Header>
+            <Nav>
+              <NavItem eventKey={1} ><Link to="/">Home</Link></NavItem>
+              <NavItem eventKey={2} ><Link to="/albuns">Albuns</Link></NavItem>
+            </Nav>
+            <Nav pullRight>
+              <NavItem eventKey={1}><Link to="/login">Log In</Link></NavItem>
+              <NavItem eventKey={2}><Link to="/signup">Sign Up</Link></NavItem>
+            </Nav>
+      </Navbar>
         <div className="col-md-6 col-md-push-3">
-          <center><h2>Signing Up</h2></center>
+          <center><h1>Welcome!</h1></center>
           <div className="well">
             <form className="form-horizontal">
               <div className="form-group">
@@ -59,13 +83,13 @@ export default class SignUpPage extends React.Component {
               <div className="form-group">
                 <label className="control-label col-sm-3">Password</label>
                 <div className="col-sm-6">
-                  <input className="form-control"onChange={this.changePasswordText} value={this.state.passwordText}/>
+                  <input type="password"className="form-control"onChange={this.changePasswordText} value={this.state.passwordText}/>
                 </div>
               </div>
               <div className="form-group">
                 <label className="control-label col-sm-3">Confirm Password</label>
                 <div className="col-sm-6">
-                  <input className="form-control"onChange={this.changePasswordConfirm} value={this.state.passwordConfirm}/>
+                  <input type="password"className="form-control"onChange={this.changePasswordConfirm} value={this.state.passwordConfirm}/>
                 </div>
               </div>
               <div className="form-group">
@@ -75,13 +99,11 @@ export default class SignUpPage extends React.Component {
                 </div>
               </div>
             </form>
-            <div className="form-group col-sm-3 col-sm-push-3">
-              <label>User type:</label>
-              <select className="form-control" id="sel1">
-                <option>Normal User</option>
-                <option>Artist</option>
-              </select>
-            </div>
+			<Dropdown className="dropdown" options={[
+             {value: 'one', label: 'User'},
+             {value: 'two', label: 'Artist'}
+             ]} value={this.typeUser} placeholder="User Type"/>
+
           </div>
           <div className="form-group">
             <Link to="/">
